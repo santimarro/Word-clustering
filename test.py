@@ -20,7 +20,7 @@ with open("lemmatization-es.txt") as f:
 
 
 def process_dump():
-  with open("xab") as f:
+  with open("xaa") as f:
       lavozdump = f.readlines()
 
   lavozdump = [x.strip() for x in lavozdump]
@@ -31,7 +31,7 @@ def process_dump():
   # Convert to lower case, split into individual words
   words = [x.lower() for x in letters_only]
   # Remove stop words
-  meaningful_words = [w for w in words if not w in stops]
+  meaningful_words = [w for w in words if not w in spanish_stopwords]
   # Join the words back into one string separated by space,
   # and return the result.
   lavoz = " ".join(meaningful_words)
@@ -59,7 +59,7 @@ def tokenize(text):
     stems = ['']
   return stems
 
-
+process_dump()
 vectorizer = CountVectorizer(
                 input = 'output.txt',
                 analyzer = 'word',
