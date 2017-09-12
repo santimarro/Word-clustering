@@ -1,6 +1,16 @@
 import nltk
 import re
+from nltk.stem import SnowballStemmer
+from nltk import word_tokenize
+from nltk.data import load
+from string import punctuation
+from sklearn.feature_extraction.text import CountVectorizer       
 
+stemmer = SnowballStemmer('spanish')
+spanish_stopwords = set(nltk.corpus.stopwords.words('spanish'))
+non_words = list(punctuation)
+non_words.extend(['¿', '¡'])
+non_words.extend(map(str,range(10)))
 # Load the spanish lemma dictionary
 lemma_dict = {}
 with open("lemmatization-es.txt") as f:
@@ -17,46 +27,59 @@ def process_dump():
 
   lavoz = " ".join(lavozdump)
 
-  stops = set(nltk.corpus.stopwords.words('spanish'))
-
   letters_only = re.findall(r'(\w+)', lavoz, re.UNICODE)
-  
   # Convert to lower case, split into individual words
   words = [x.lower() for x in letters_only]
-  print words
-
   # Remove stop words
   meaningful_words = [w for w in words if not w in stops]
   # Join the words back into one string separated by space,
   # and return the result.
   lavoz = " ".join(meaningful_words)
-  
-  return lavoz
+  with open("output.txt", "w") as f:
+    f.write(lavoz)
+  return 0
+
+def stem_tokens(tokens, stemmer):
+  stemmed = []
+  for item in tokens:
+    stemmed.append(stemmer.stem(item))
+  return stemmed
 
 
-def tokenize_only(text):
-  # first tokenize by sentence, then by word to ensure that punctuation is caught as it's own token
-  tokens = [word.lower() for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
-  filtered_tokens = []
-  # filter out any tokens not containing letters (e.g., numeric tokens, raw punctuation)
-  for token in tokens:
-    if re.search(r'(\w+)', token, re.UNICODE):
-        filtered_tokens.append(token)
-  return filtered_tokens
+def tokenize(text):
+  text = ''.join([c for c in text if c not in non_words])
+  tokens =  word_tokenize(text)
+
+  # lemmatize
+  try:
+    stems = stem_tokens(tokens, stemmer)
+  except Exception as e:
+    print(e)
+    print(text)
+    stems = ['']
+  return stems
 
 
+vectorizer = CountVectorizer(
+                input = 'output.txt',
+                analyzer = 'word',
+                tokenizer = tokenize,
+                lowercase = True,
+                stop_words = spanish_stopwords)
+
+'''
 def test():
   process_dump()
   #Open text dump
   print("------Comienzo-------")
   with open("output.txt") as f:
     lavozdump = f.readlines()
-  totalvocab_stemmed = []
+  totalvocab_lemmatized = []
   totalvocab_tokenized = []
 
   for i in lavozdump:
-    allwords_stemmed = tokenize_and_stem(i) #for each item in 'synopses', tokenize/stem
-    totalvocab_stemmed.extend(allwords_stemmed) #extend the 'totalvocab_stemmed' list
+    allwords_lemmatized = tokenize_and_lemmatize(i) #for each item in 'synopses', tokenize/lemmatize
+    totalvocab_stemmed.extend(allwords_lemmatized) #extend the 'totalvocab_stemmed' list
     
     allwords_tokenized = tokenize_only(i)
     totalvocab_tokenized.extend(allwords_tokenized)
@@ -66,4 +89,6 @@ def test():
   print (vocab_frame.head())
   
 test()
+'''
+
 
