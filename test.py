@@ -47,7 +47,7 @@ def stem_tokens(tokens, stemmer):
 
 
 def tokenize(text):
-  text = ''.join([c for c in text if c not in non_words])
+  text = ' '.join([c for c in text if c not in non_words])
   tokens =  word_tokenize(text)
 
   # lemmatize
