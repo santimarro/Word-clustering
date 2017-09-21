@@ -4,7 +4,8 @@ from nltk.stem import SnowballStemmer
 from nltk import word_tokenize
 from nltk.data import load
 from string import punctuation
-from sklearn.feature_extraction.text import CountVectorizer       
+from sklearn.feature_extraction.text import CountVectorizer
+import spacy
 
 stemmer = SnowballStemmer('spanish')
 spanish_stopwords = set(nltk.corpus.stopwords.words('spanish'))
@@ -29,15 +30,16 @@ def process_dump():
 
   letters_only = re.findall(r'(\w+)', lavoz, re.UNICODE)
   # Convert to lower case, split into individual words
-  words = [x.lower() for x in letters_only]
+  # words = [x.lower() for x in letters_only]
   # Remove stop words
-  meaningful_words = [w for w in words if not w in spanish_stopwords]
+  # meaningful_words = [w for w in words if not w in spanish_stopwords]
   # Join the words back into one string separated by space,
   # and return the result.
-  lavoz = " ".join(meaningful_words)
+  lavoz = " ".join(letters_only)
+  # lavoz = " ".join(meaningful_words)
   with open("output.txt", "w") as f:
     f.write(lavoz)
-  return 0
+  return lavoz
 
 def stem_tokens(tokens, stemmer):
   stemmed = []
@@ -59,7 +61,48 @@ def tokenize(text):
     stems = ['']
   return stems
 
-process_dump()
+
+def test_spacy():
+  # lavoz = process_dump()
+  example = "El niño jugaba con el perro blanco en la playa. Luego el perro murió"
+  parser = spacy.load('es')
+  parsedData = parser(example)
+  for i, token in enumerate(parsedData):
+    print("original:", token.orth, token.orth_)
+    print("lowercased:", token.lower, token.lower_)
+    print("lemma:", token.lemma, token.lemma_)
+    print("shape:", token.shape, token.shape_)
+    print("prefix:", token.prefix, token.prefix_)
+    print("suffix:", token.suffix, token.suffix_)
+    print("log probability:", token.prob)
+    print("Brown cluster id:", token.cluster)
+    print("----------------------------------------")
+    if i > 1:
+        break
+        
+  for token in parsedData:
+    print(token.orth_, token.dep_, token.head.orth_, [t.orth_ for t in token.lefts], [t.orth_ for t in token.rights])
+        
+  # Let's look at the sentences
+  sents = []
+  # the "sents" property returns spans
+  # spans have indices into the original string
+  # where each index value represents a token
+
+  # Let's look at the part of speech tags of the first sentence
+  for span in parsedData.sents:
+      sent = [parsedData[i] for i in range(span.start, span.end)]
+      break
+
+  for token in sent:
+      print(token.orth_, token.pos_)
+  
+  return 0
+
+
+test_spacy()
+'''
+
 vectorizer = CountVectorizer(
                 input = 'output.txt',
                 analyzer = 'word',
@@ -67,7 +110,6 @@ vectorizer = CountVectorizer(
                 lowercase = True,
                 stop_words = spanish_stopwords)
 
-'''
 def test():
   process_dump()
   #Open text dump
