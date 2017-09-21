@@ -1,20 +1,8 @@
 import nltk
 import re
-from nltk.stem import SnowballStemmer
-from nltk import word_tokenize
-from nltk.data import load
-from string import punctuation
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction import DictVectorizer
 import spacy
 
-'''
-stemmer = SnowballStemmer('spanish')
-spanish_stopwords = set(nltk.corpus.stopwords.words('spanish'))
-non_words = list(punctuation)
-non_words.extend(['¿', '¡'])
-non_words.extend(map(str,range(10)))
-
-'''
 
 # Load the spanish lemma dictionary
 lemma_dict = {}
@@ -47,19 +35,23 @@ def process_dump():
 
 
 def generate_features():
+'''
+Version 0.1, proximo paso es automatizar la creacion de este diccionario,
+usando las palabras claves que aparecen en por ejemplo token.tag.
+'''
   features = {}
   i = 0
   if not token.is_stop():
     for token in parsedData:
-      # features['lemma'] = lema sacado del lexiconer
       features['lowercase'] = token.orth_.islower()
-      features['tag'] = token.tag
-      features['tag'] = token.pos
+      #features['tag'] = token.tag
+      #features['pos'] = token.pos
       features['left_word'] = [t.orth_ for t in token.lefts]
       features['left_tag'] = [t.tag for t in token.lefts]
       features['right_word'] = [t.orth_ for t in token.rights]
       features['right_tag'] = [t.tag for t in token.lefts]
       features['dep'] = token.dep
+      features['dep_token'] = token.head.orth_
       control_list[i] = token.orth_
       i+=1
 
@@ -73,7 +65,10 @@ def test_spacy():
   # Generate feature dict
   features, control_list = generate_features()
   # Vectorize the feature dictionary
-  
+  v = DictVectorizer(sparse=False)
+  X = v.fit_transform(features)
+  print(X)
+
   return 0
 
 
