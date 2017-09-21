@@ -7,11 +7,15 @@ from string import punctuation
 from sklearn.feature_extraction.text import CountVectorizer
 import spacy
 
+'''
 stemmer = SnowballStemmer('spanish')
 spanish_stopwords = set(nltk.corpus.stopwords.words('spanish'))
 non_words = list(punctuation)
 non_words.extend(['¿', '¡'])
 non_words.extend(map(str,range(10)))
+
+'''
+
 # Load the spanish lemma dictionary
 lemma_dict = {}
 with open("lemmatization-es.txt") as f:
@@ -41,96 +45,38 @@ def process_dump():
     f.write(lavoz)
   return lavoz
 
-def stem_tokens(tokens, stemmer):
-  stemmed = []
-  for item in tokens:
-    stemmed.append(stemmer.stem(item))
-  return stemmed
 
+def generate_features():
+  features = {}
+  i = 0
+  if not token.is_stop():
+    for token in parsedData:
+      # features['lemma'] = lema sacado del lexiconer
+      features['lowercase'] = token.orth_.islower()
+      features['tag'] = token.tag
+      features['tag'] = token.pos
+      features['left_word'] = [t.orth_ for t in token.lefts]
+      features['left_tag'] = [t.tag for t in token.lefts]
+      features['right_word'] = [t.orth_ for t in token.rights]
+      features['right_tag'] = [t.tag for t in token.lefts]
+      features['dep'] = token.dep
+      control_list[i] = token.orth_
+      i+=1
 
-def tokenize(text):
-  text = ' '.join([c for c in text if c not in non_words])
-  tokens =  word_tokenize(text)
-
-  # lemmatize
-  try:
-    stems = stem_tokens(tokens, stemmer)
-  except Exception as e:
-    print(e)
-    print(text)
-    stems = ['']
-  return stems
+  return features, control_list
 
 
 def test_spacy():
-  # lavoz = process_dump()
-  example = "El niño jugaba con el perro blanco en la playa. Luego el perro murió"
+  lavoz = process_dump()
   parser = spacy.load('es')
-  parsedData = parser(example)
-  for i, token in enumerate(parsedData):
-    print("original:", token.orth, token.orth_)
-    print("lowercased:", token.lower, token.lower_)
-    print("lemma:", token.lemma, token.lemma_)
-    print("shape:", token.shape, token.shape_)
-    print("prefix:", token.prefix, token.prefix_)
-    print("suffix:", token.suffix, token.suffix_)
-    print("log probability:", token.prob)
-    print("Brown cluster id:", token.cluster)
-    print("----------------------------------------")
-    if i > 1:
-        break
-        
-  for token in parsedData:
-    print(token.orth_, token.dep_, token.head.orth_, [t.orth_ for t in token.lefts], [t.orth_ for t in token.rights])
-        
-  # Let's look at the sentences
-  sents = []
-  # the "sents" property returns spans
-  # spans have indices into the original string
-  # where each index value represents a token
-
-  # Let's look at the part of speech tags of the first sentence
-  for span in parsedData.sents:
-      sent = [parsedData[i] for i in range(span.start, span.end)]
-      break
-
-  for token in sent:
-      print(token.orth_, token.pos_)
+  parsedData = parser(lavoz)
+  # Generate feature dict
+  features, control_list = generate_features()
+  # Vectorize the feature dictionary
   
   return 0
 
 
 test_spacy()
-'''
-
-vectorizer = CountVectorizer(
-                input = 'output.txt',
-                analyzer = 'word',
-                tokenizer = tokenize,
-                lowercase = True,
-                stop_words = spanish_stopwords)
-
-def test():
-  process_dump()
-  #Open text dump
-  print("------Comienzo-------")
-  with open("output.txt") as f:
-    lavozdump = f.readlines()
-  totalvocab_lemmatized = []
-  totalvocab_tokenized = []
-
-  for i in lavozdump:
-    allwords_lemmatized = tokenize_and_lemmatize(i) #for each item in 'synopses', tokenize/lemmatize
-    totalvocab_stemmed.extend(allwords_lemmatized) #extend the 'totalvocab_stemmed' list
-    
-    allwords_tokenized = tokenize_only(i)
-    totalvocab_tokenized.extend(allwords_tokenized)
-
-  vocab_frame = pd.DataFrame({'words': totalvocab_tokenized}, index = totalvocab_stemmed)
-  print ('there are ' + str(vocab_frame.shape[0]) + ' items in vocab_frame')
-  print (vocab_frame.head())
-  
-test()
-'''
 
 
