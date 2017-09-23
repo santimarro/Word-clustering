@@ -3,14 +3,14 @@ from sklearn.feature_extraction import DictVectorizer
 from sklearn.cluster import KMeans
 import spacy
 
-
+'''
 # Load the spanish lemma dictionary
 lemma_dict = {}
 with open("lemmatization-es.txt") as f:
   for line in f:
      (key, val) = line.split()
      lemma_dict[key] = val
-
+'''
 
 def process_dump():
   with open("xaa") as f:
