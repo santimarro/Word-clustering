@@ -93,10 +93,18 @@ def test_spacy():
     if not item in clusters:
       clusters.append((control_list[i], val))
       count[val] += 1
-  
+      
+  with open("clusters.txt", "w") as f:
+    for i, val in enumerate(labels):
+      f.write('----------- Cluster: ' + str(i) + '----------------')
+      f.write('\n')
+      cluster_i = [item[0] for item in clusters if item[1] == i]
+      f.write(' '.join(str(e) for e in cluster_i))
+      f.write('\n')
+ 
   clusters.sort(key=lambda x: x[1])
-  print(clusters)
-  print (count)
+  # print(clusters)
+  # print (count)
   import ipdb; ipdb.set_trace()
   return 0
 
