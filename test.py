@@ -53,18 +53,20 @@ def generate_features(parsedData):
         #features['tag'] = token.tag
         features['pos'] = token.pos
         # Save the previous and next token info
-        if previous_token is None:
-          features['word-1'] = 'start'
-        else:
-          features['word-1'] = previous_token.orth_
-          features['word-1-pos'] = previous_token.pos
+        if previous_token is not None:
+          features['word-1'] = token.nbor(-1).orth_
+          features['word-1-pos'] = token.nbor(-1).pos
 
         # Save the dependencie of the token and with whom is related
         features['dep'] = token.dep
         features['dep-head'] = token.head.orth_
+        
+        try:
+          features['word+1'] = token.nbor().orth_
+          features['word+1-pos'] = token.nbor().pos
+        except IndexError:
+          pass
 
-        features['word+1'] = token.nbor().orth_
-        features['word+1-pos'] = token.nbor().pos
         final_features.append(features)
         control_list.append(token.orth_)
       previous_token = token
@@ -73,24 +75,28 @@ def generate_features(parsedData):
 
 
 def test_spacy():
-  # lavoz = process_dump()
+  lavoz = process_dump()
   parser = spacy.load('es')
-  example = 'El niño juega con la pelota amarilla en la playa. Luego la pelota se rompió.'
-  parsedData = parser(example)
+  parsedData = parser(lavoz)
   # Generate feature dict
   features, control_list = generate_features(parsedData)
-  print (features)
-  print ("------------")
-  print (control_list)
 
   # Vectorize the feature dictionary
   v = DictVectorizer()
   X = v.fit_transform(features)
-  print(X)
   # Kmeans
-  kmeans = KMeans(n_clusters=30, random_state=0).fit(X)
+  kmeans = KMeans(n_clusters=20, random_state=0).fit(X)
   labels = kmeans.labels_
-  print (labels)
+  clusters = []
+  count = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+  for i, val in enumerate(labels):
+    clusters.append((control_list[i], val))
+    count[val] += 1
+  
+  clusters.sort(key=lambda x: x[1])
+  print(clusters)
+  print (count)
+  import ipdb; ipdb.set_trace()
   return 0
 
 
