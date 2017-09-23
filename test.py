@@ -1,4 +1,3 @@
-import nltk
 import re
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.cluster import KMeans
@@ -90,8 +89,10 @@ def test_spacy():
   clusters = []
   count = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
   for i, val in enumerate(labels):
-    clusters.append((control_list[i], val))
-    count[val] += 1
+    item = (control_list[i], val)
+    if not item in clusters:
+      clusters.append((control_list[i], val))
+      count[val] += 1
   
   clusters.sort(key=lambda x: x[1])
   print(clusters)
