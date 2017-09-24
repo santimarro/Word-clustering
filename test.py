@@ -88,24 +88,23 @@ def test_spacy():
   labels = kmeans.labels_
   clusters = []
   count = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+
   for i, val in enumerate(labels):
     item = (control_list[i], val)
-    if not item in clusters:
-      clusters.append((control_list[i], val))
-      count[val] += 1
-      
-  with open("clusters.txt", "w") as f:
-    for i, val in enumerate(labels):
-      f.write('----------- Cluster: ' + str(i) + '----------------')
-      f.write('\n')
-      cluster_i = [item[0] for item in clusters if item[1] == i]
-      f.write(' '.join(str(e) for e in cluster_i))
-      f.write('\n')
- 
+    clusters.append(item)
+    count[val] += 1
+
   clusters.sort(key=lambda x: x[1])
+  
+  for i, val in enumerate(labels):
+    print('----------- Cluster: ' + str(i) + '----------------')
+    print('\n')
+    print([item[0] for item in clusters if item[1] == i])
+    print('\n')
+ 
   # print(clusters)
   # print (count)
-  import ipdb; ipdb.set_trace()
+  # import ipdb; ipdb.set_trace()
   return 0
 
 
