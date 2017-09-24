@@ -84,19 +84,21 @@ def test_spacy():
   v = DictVectorizer()
   X = v.fit_transform(features)
   # Kmeans
-  kmeans = KMeans(n_clusters=20, random_state=0).fit(X)
+  n = 20
+  kmeans = KMeans(n_clusters=n, random_state=0).fit(X)
   labels = kmeans.labels_
   clusters = []
   count = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 
   for i, val in enumerate(labels):
     item = (control_list[i], val)
-    clusters.append(item)
-    count[val] += 1
+    if item not in clusters:
+      clusters.append(item)
+      count[val] += 1
 
   clusters.sort(key=lambda x: x[1])
-  
-  for i, val in enumerate(labels):
+
+  for i in (range(n)):
     print('----------- Cluster: ' + str(i) + '----------------')
     print('\n')
     print([item[0] for item in clusters if item[1] == i])
