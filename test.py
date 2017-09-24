@@ -49,7 +49,7 @@ def generate_features(parsedData):
       if not token.is_stop:
         features = {}
         features['lowercase'] = token.is_lower
-        #features['tag'] = token.tag
+        features['tag'] = token.tag_
         features['pos'] = token.pos
         # Save the previous and next token info
         if previous_token is not None:
@@ -75,6 +75,7 @@ def generate_features(parsedData):
 
 def test_spacy():
   lavoz = process_dump()
+  example = "El niño juega con la pelota amarilla. El niño luego rompió la pelota amarilla, por lo que buscó la pelota azul."
   parser = spacy.load('es')
   parsedData = parser(lavoz)
   # Generate feature dict
@@ -84,7 +85,7 @@ def test_spacy():
   v = DictVectorizer()
   X = v.fit_transform(features)
   # Kmeans
-  n = 20
+  n = 15
   kmeans = KMeans(n_clusters=n, random_state=0).fit(X)
   labels = kmeans.labels_
   clusters = []
@@ -97,6 +98,7 @@ def test_spacy():
       count[val] += 1
 
   clusters.sort(key=lambda x: x[1])
+  print (count)
 
   for i in (range(n)):
     print('----------- Cluster: ' + str(i) + '----------------')
@@ -105,7 +107,6 @@ def test_spacy():
     print('\n')
  
   # print(clusters)
-  # print (count)
   # import ipdb; ipdb.set_trace()
   return 0
 
