@@ -13,13 +13,12 @@ with open("lemmatization-es.txt") as f:
 '''
 
 def process_dump():
-  with open("xaa") as f:
+  with open("lavoztextodump.txt") as f:
       lavozdump = f.readlines()
 
   lavozdump = [x.strip() for x in lavozdump]
 
   lavoz = " ".join(lavozdump)
-
   letters_only = re.findall(r'(\w+)', lavoz, re.UNICODE)
   # Convert to lower case, split into individual words
   # words = [x.lower() for x in letters_only]
@@ -32,7 +31,6 @@ def process_dump():
   with open("output.txt", "w") as f:
     f.write(lavoz)
   return lavoz
-
 
 def generate_features(parsedData):
   '''
@@ -57,8 +55,7 @@ def generate_features(parsedData):
           features['word-1-pos'] = token.nbor(-1).pos
 
         # Save the dependencie of the token and with whom is related
-        features['dep'] = token.dep
-        features['dep-head'] = token.head.orth_
+        features[token.dep_] = token.head.orth_
         
         try:
           features['word+1'] = token.nbor().orth_
@@ -75,7 +72,7 @@ def generate_features(parsedData):
 
 def test_spacy():
   lavoz = process_dump()
-  example = "El niño juega con la pelota amarilla. El niño luego rompió la pelota amarilla, por lo que buscó la pelota azul."
+  example = "El niño juega con -la pelota amarilla. ¿El niño luego rompió la pelota amarilla, por lo que buscó la pelota azul."
   parser = spacy.load('es')
   parsedData = parser(lavoz)
   # Generate feature dict
@@ -85,11 +82,11 @@ def test_spacy():
   v = DictVectorizer()
   X = v.fit_transform(features)
   # Kmeans
-  n = 15
+  n = 40
   kmeans = KMeans(n_clusters=n, random_state=0).fit(X)
   labels = kmeans.labels_
   clusters = []
-  count = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+  count = [0]*n
 
   for i, val in enumerate(labels):
     item = (control_list[i], val)
@@ -99,11 +96,18 @@ def test_spacy():
 
   clusters.sort(key=lambda x: x[1])
   print (count)
+  print('----------------- Cluster: 0 ------------------')
+  val = 0
+  counter = 0
+  for i in range(sum(count)):
+    if counter >= count[val]:
+      val += 1
+      counter = 0
+      print('----------- Cluster: ' + str(val) + '----------------')
+      print('\n')
 
-  for i in (range(n)):
-    print('----------- Cluster: ' + str(i) + '----------------')
-    print('\n')
-    print([item[0] for item in clusters if item[1] == i])
+    counter += 1
+    print(clusters[i])
     print('\n')
  
   # print(clusters)
