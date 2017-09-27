@@ -14,7 +14,7 @@ El proceso se divide en varias etapas:
   
 ### Herramientas utilizadas
   - Para el parseo del corpus se utilizó la libreria _SpaCy_, la cual nos provee formas de preprocesar,
-  tokenizar y analizar caracteristicas semánticas y sintácticas del mismo.
+    tokenizar y analizar caracteristicas semánticas y sintácticas del mismo.
   
   - Para el vectorizado y clusterizado se utilizó la libreria Scikit Learn.
 
@@ -38,14 +38,14 @@ El proceso se divide en varias etapas:
   Para la creación del diccionario de features, tomando la información proveida por la libreria _SpaCy_
   se tuvieron en consideración distintas caracteristicas.
   Por cada token se utilizó:
-    - Si el token está en minusculas.
-    - Su pos tagging (Coarse grained tagging).
-    - Su tag (Fine grained tagging)
-    - El token anterior en la oración.
-    - El pos tagging del token anterior.
-    - El token siguiente en la oración.
-    - El pos tagging del token siguiente.
-    - Se implementaron triplas de dependencias con formato conll.
+  - Si el token está en minusculas.
+  - Su pos tagging (Coarse grained tagging).
+  - Su tag (Fine grained tagging)
+  - El token anterior en la oración.
+  - El pos tagging del token anterior.
+  - El token siguiente en la oración.
+  - El pos tagging del token siguiente.
+  - Se implementaron triplas de dependencias con formato conll.
 
 ### Vectorizado de palabras
   Para el vectorizado de las palabras se utilizó _Dictvectorizer_ el cual nos genera la matriz
@@ -57,15 +57,16 @@ El proceso se divide en varias etapas:
 
   El clusterizado se utilizó la versión del algoritmo _KMeans_ provisto por _Scikit Learn_, donde se utilizaron
   los siguientes parametros:
-    - Cantidad de iteraciones: 
-    - Cantidad de seeds:
-    - Cantidad de clusters: Entre 25 y 100, dependiendo del experimento?.
+  - Cantidad de iteraciones: _300_ iteraciones
+  - Cantidad de veces que se eligen seeds: _10_
+  - Cantidad de clusters: Entre _25 y 120_, dependiendo del experimento.
   
   A partir de estos parametros, se ejecutó el algoritmo de _KMeans_ y se obtuvo los clusters a los cuales pertenece
   cada palabra.
 
-    
-    
+## Analisis de resultados
+
+  A continu
     
     
     
