@@ -14,7 +14,7 @@ with open("lemmatization-es.txt") as f:
 '''
 
 def process_dump():
-  with open("lavoztextodump.txt") as f:
+  with open("xaa") as f:
       lavozdump = f.readlines()
 
   lavozdump = [x.strip() for x in lavozdump]
@@ -88,11 +88,11 @@ def test_spacy():
   print(v.get_feature_names())
   import ipdb; ipdb.set_trace()
   # Reduce dimensionality
-  # svd = TruncatedSVD(n_components=, n_iter=7, random_state=42)
-  
+  svd = TruncatedSVD(n_components=200000, n_iter=7, random_state=42)
+  Y = svd.fit_transform(X)
   # Kmeans
   n = 40
-  kmeans = KMeans(n_clusters=n, random_state=0).fit(X)
+  kmeans = KMeans(n_clusters=n, random_state=0).fit(Y)
   labels = kmeans.labels_
   clusters = []
   count = [0]*n
