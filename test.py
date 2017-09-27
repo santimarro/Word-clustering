@@ -1,5 +1,6 @@
 import re
 from sklearn.feature_extraction import DictVectorizer
+from sklearn.decomposition import TruncatedSVD
 from sklearn.cluster import KMeans
 import spacy
 
@@ -56,6 +57,8 @@ def generate_features(parsedData):
 
         # Save the dependencie of the token and with whom is related
         features[token.dep_] = token.head.orth_
+        # The pos tagging of the head token
+        features['head-pos'] = token.head.pos
         
         try:
           features['word+1'] = token.nbor().orth_
@@ -81,6 +84,12 @@ def test_spacy():
   # Vectorize the feature dictionary
   v = DictVectorizer()
   X = v.fit_transform(features)
+  
+  print(v.get_feature_names())
+  import ipdb; ipdb.set_trace()
+  # Reduce dimensionality
+  # svd = TruncatedSVD(n_components=, n_iter=7, random_state=42)
+  
   # Kmeans
   n = 40
   kmeans = KMeans(n_clusters=n, random_state=0).fit(X)
@@ -96,7 +105,7 @@ def test_spacy():
 
   clusters.sort(key=lambda x: x[1])
   print (count)
-  print('----------------- Cluster: 0 ------------------')
+  print ('----------- Cluster: 0 ----------------')
   val = 0
   counter = 0
   for i in range(sum(count)):
@@ -111,10 +120,22 @@ def test_spacy():
     print('\n')
  
   # print(clusters)
-  # import ipdb; ipdb.set_trace()
   return 0
 
 
 test_spacy()
+
+
+
+'''
+TODO:
+  Revisar preprocesamiento, sacar solo caracteres raros, no puntuacion.
+  Reduccion de dimensionalidad.
+  Ver de elegir features para distintas corridas.
+  Analizar clusters
+  
+
+'''
+
 
 
