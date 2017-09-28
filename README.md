@@ -125,7 +125,7 @@ Veamos un ejemplo de uno de los clusters más chicos (100 palabras), el cluster 
 ['y', 'Y', 'o', 'suelen', 'l', 'u', 'vuelva', 'habría', 'serían', 'suele', 'macho', 'ste', 'parecía', 'debería', 'Habría', 'E', 'I', 's', 'hayan', 'admiraste', 'estaría', 'fuese', 'debió', 'mine', 'deberá', 'debiera', 'g', 'siguen', 'e', 'tales', 'organizás', 'termina', 'O', 'habrían', 'web', 'parecer', 'fueran', 'continúa', 'continuarán', 'parecen', 'estuvieron', 'seguirán', 'hinchazón', 'sta', 'escudriñé', 'hubiera', 'desentendiéndose', 'comenzaron', 'b', 'seguirá', 'deberían', 'ó', 'estarán', 'previstos', 'higiene', 'hubiese', 'empleaban', 'pudieron', 'vacuna', 'deba', 'terminó', 'pudiese', 'dúplex', 'cero', 'ajuste', 'terminan', 'K', 'melero', 'parezca', 'unaa', 'i', 'sigan', 'discrepamos', 'sojero', 'ocurrida', 'ph', 'esté', 'excedían', 'vienen', 'viene', 'debemos', 'Debemos', 'ar', 'vos', 'arrojó', 'siguió', 'iba', 'debía', 'desistiera', 'hubiesen', 'Deberá', 'ergo', 'n', 'extra', 'estarían', 'Debía', 'estofa', 'pudieran', 'seguía', 'extendiéndose']
 ```
 
-## Conclusion
+## Conclusión
 Utilizando distintas herramientas podemos realizar un clusterizado de un corpus dado, el cual nos proveerá resultados dependiendo de las distintas features que utilicemos o creamos relevantes.
 Como ya vimos, en este experimento se dieron clusters sintácticos, por lo que se buscará en un futuro implementar distintas features y lograr clusters más semánticos.
 
