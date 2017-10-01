@@ -1,37 +1,10 @@
 import re
+import process_dump
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.decomposition import TruncatedSVD
 from sklearn.cluster import KMeans
 import spacy
 
-'''
-# Load the spanish lemma dictionary
-lemma_dict = {}
-with open("lemmatization-es.txt") as f:
-  for line in f:
-     (key, val) = line.split()
-     lemma_dict[key] = val
-'''
-
-def process_dump():
-  with open("xaa") as f:
-      lavozdump = f.readlines()
-
-  lavozdump = [x.strip() for x in lavozdump]
-
-  lavoz = " ".join(lavozdump)
-  letters_only = re.findall(r'(\w+)', lavoz, re.UNICODE)
-  # Convert to lower case, split into individual words
-  # words = [x.lower() for x in letters_only]
-  # Remove stop words
-  # meaningful_words = [w for w in words if not w in spanish_stopwords]
-  # Join the words back into one string separated by space,
-  # and return the result.
-  lavoz = " ".join(letters_only)
-  # lavoz = " ".join(meaningful_words)
-  with open("output.txt", "w") as f:
-    f.write(lavoz)
-  return lavoz
 
 def generate_features(parsedData):
   '''
@@ -73,9 +46,8 @@ def generate_features(parsedData):
   return final_features, control_list
 
 
-def test_spacy():
+def word_clustering():
   lavoz = process_dump()
-  example = "El niño juega con -la pelota amarilla. ¿El niño luego rompió la pelota amarilla, por lo que buscó la pelota azul."
   parser = spacy.load('es')
   parsedData = parser(lavoz)
   # Generate feature dict
@@ -123,19 +95,4 @@ def test_spacy():
   return 0
 
 
-test_spacy()
-
-
-
-'''
-TODO:
-  Revisar preprocesamiento, sacar solo caracteres raros, no puntuacion.
-  Reduccion de dimensionalidad.
-  Ver de elegir features para distintas corridas.
-  Analizar clusters
-  
-
-'''
-
-
-
+word_clustering()
