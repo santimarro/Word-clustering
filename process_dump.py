@@ -1,6 +1,6 @@
 import re
 import spacy
-import cPickle
+import _pickle as cPickle
 
 def generate_features(parsedData):
 
@@ -13,7 +13,7 @@ def generate_features(parsedData):
       if not token.is_stop:
         features = {}
         features['lowercase'] = token.is_lower
-        features['tag'] = token.tag_
+        # features['tag'] = token.tag_
         features['pos'] = token.pos
         # Save the previous and next token info
         if previous_token is not None:
@@ -66,5 +66,6 @@ def process_dump():
     cPickle.dump(control_list, output_file)
 
   return 0
-  
+
+process_dump()  
 
