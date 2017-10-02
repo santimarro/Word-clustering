@@ -1,10 +1,9 @@
 import re
-import process_dump
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.decomposition import TruncatedSVD
 from sklearn.cluster import KMeans
-import spacy
-
+from sklearn.preprocessing import normalize
+import _pickle as cPickle
 
 def word_clustering():
 
@@ -48,7 +47,7 @@ def word_clustering():
         f.write('\n')
         f.write('----------- Cluster: ' + str(cluster_number) + '----------------')
         f.write('\n')
-        f.write(cluster)
+        f.write(str(cluster))
         cluster = []
 
       counter += 1
