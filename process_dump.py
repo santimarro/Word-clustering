@@ -1,6 +1,15 @@
 import re
 import spacy
 import _pickle as cPickle
+from nltk.corpus import stopwords
+
+
+def vectorize(features):
+  # Vectorize the feature dictionary
+  v = DictVectorizer()
+  X = v.fit_transform(features)
+  return X
+
 
 def generate_features(parsedData):
 
@@ -38,7 +47,61 @@ def generate_features(parsedData):
   return final_features, control_list
 
 
-def process_dump():
+def generate_features_supervised(parsedData):
+  stop_words = set(stopwords.words('spanish'))
+  final_features = []
+  control_list = []
+  target_vector = []
+  puntuaction = ['¡', '!', '¿', '?', '.', ';', ':', ',', '"']
+  for i, word in enumerate(parsedData):
+    if not word[0] in puntuaction:
+      if not token[0] in stop_words:
+        features = {}
+        features['lemma'] = token[LEMMA]
+        features['pos'] = token[POS]
+        features['synset'] = token[SYNSET]
+        # Save the previous and next token info
+        try:
+          features['word+1'] = parsedData[i+1][LEMMA]
+          features['word+1-pos'] = parsedData[i+1][POS]
+          features['word-1'] = parsedData[i-1][LEMMA]
+          features['word-1-pos'] = parsedData[i-1][POS]
+        except IndexError:
+          pass
+        
+        # Save the synset as the target vector
+        target_vector.append(token[SYNSET])
+        final_features.append(features)
+        control_list.append(token[WORD])
+
+  return final_features, control_list, target_vector
+
+
+def process_dump_supervised():
+  with open("xaa") as f:
+      corpus = f.readlines()
+
+  corpus = [[x.split() for x in lavozdump]]
+
+  # Generate feature dict
+  features, control_list, target_vector = generate_features(corpus)
+  with open(r"features.pickle", "wb") as output_file:
+    cPickle.dump(features, output_file)
+  
+  with open(r"control_list.pickle", "wb") as output_file:
+    cPickle.dump(control_list, output_file)
+    
+  with open(r"target_vector.pickle", "wb") as output_file:
+    cPickle.dump(target_vector, output_file)
+  
+  X = vectorize(features)
+  with open(r"X.pickle", "wb") as output_file:
+    cPickle.dump(X, output_file)
+
+  return 0
+
+
+def process_dump_unsupervised():
   with open("xaa") as f:
       lavozdump = f.readlines()
 
@@ -64,8 +127,12 @@ def process_dump():
   
   with open(r"control_list.pickle", "wb") as output_file:
     cPickle.dump(control_list, output_file)
+ 
+  X = vectorize(features)
+  with open(r"X.pickle", "wb") as output_file:
+    cPickle.dump(X, output_file)
 
   return 0
 
-process_dump()  
+process_dump_supervised()  
 

@@ -3,28 +3,44 @@ from sklearn.feature_extraction import DictVectorizer
 from sklearn.decomposition import TruncatedSVD
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import normalize
+from sklearn.feature_selection import SelectKBest
+from sklearn.feature_selection import chi2
 import _pickle as cPickle
 
-def word_clustering():
+  
+def normalize(X):
+    X_norm = normalize(X)
+    return X_norm
 
-  with open(r"features.pickle", "rb") as input_file:
-    features = cPickle.load(input_file)
-    
-  with open(r"control_list.pickle", "rb") as input_file:
-    control_list = cPickle.load(input_file)
 
-  # Vectorize the feature dictionary
-  v = DictVectorizer()
-  X = v.fit_transform(features)
+def reduce_dimm_svd(X, n, m):
+  svd = TruncatedSVD(n_components=n, n_iter=m, random_state=42)
+  Y = svd.fit_transform(X)
+  return Y
+
+
+def univariate_feature_selection(X, y):
+  X_new = SelectKBest(chi2, k=2).fit_transform(X, y)
+  return X_new
+
+def kmeans(X, n):
+  kmeans = KMeans(n_clusters=n, random_state=0).fit(X)
+  labels = kmeans.labels_
+  return labels
+
+def word_clustering(features, control_list, X, target_vector=0):
+
   # Normalize the matrix
   X_norm = normalize(X)
   # Reduce dimensionality
-  svd = TruncatedSVD(n_components=100, n_iter=7, random_state=42)
-  Y = svd.fit_transform(X)
+  if target_vector:
+    Y = univariate_feature_selection(X_norm, target_vector)
+  else:
+    Y = reduce_dimm_svd(X_norm, 100, 7)
+
   # Kmeans
   n = 120
-  kmeans = KMeans(n_clusters=n, random_state=0).fit(Y)
-  labels = kmeans.labels_
+  labels = kmeans(Y, n)
   clusters = []
   count = [0]*n
 
@@ -55,8 +71,23 @@ def word_clustering():
 
   return 0
 
+# Get the features dict
+with open(r"features.pickle", "rb") as input_file:
+  features = cPickle.load(input_file)
 
-word_clustering()
+# Get the control_list  
+with open(r"control_list.pickle", "rb") as input_file:
+  control_list = cPickle.load(input_file)
+
+# Get the target_vector
+with open(r"target_vector.pickle", "rb") as input_file:
+  target_vector = cPickle.load(input_file)
+
+#Get the vectorized matrix
+with open(r"X.pickle", "rb") as input_file:
+  X = cPickle.load(input_file)
+
+word_clustering(features, control_list, X, target_vector)
 
 
 
