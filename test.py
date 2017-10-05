@@ -8,9 +8,9 @@ from sklearn.feature_selection import chi2
 import _pickle as cPickle
 
   
-def normalize(X):
-    X_norm = normalize(X)
-    return X_norm
+def normalize_matrix(X):
+  X_norm = normalize(X, axis=0, copy=True, return_norm=False)
+  return X_norm
 
 
 def reduce_dimm_svd(X, n, m):
@@ -19,8 +19,8 @@ def reduce_dimm_svd(X, n, m):
   return Y
 
 
-def univariate_feature_selection(X, y):
-  X_new = SelectKBest(chi2, k=2).fit_transform(X, y)
+def univariate_feature_selection(X, y, n):
+  X_new = SelectKBest(chi2, k=n).fit_transform(X, y)
   return X_new
 
 def kmeans(X, n):
@@ -31,15 +31,21 @@ def kmeans(X, n):
 def word_clustering(features, control_list, X, target_vector=0):
 
   # Normalize the matrix
-  X_norm = normalize(X)
+  # X = normalize_matrix(X)
   # Reduce dimensionality
   if target_vector:
-    Y = univariate_feature_selection(X_norm, target_vector)
+    print(X.shape)
+    amount_words, amount_features = X.shape
+    # Discard the 30% of the features (The worst of them)
+    Y = univariate_feature_selection(X, target_vector, int(amount_features * 0.7))
+    print('Supervised Feature selection applied')
   else:
     Y = reduce_dimm_svd(X_norm, 100, 7)
 
+  print(Y.shape)
   # Kmeans
-  n = 120
+  n = 20
+  print('Clustering...')
   labels = kmeans(Y, n)
   clusters = []
   count = [0]*n
@@ -55,20 +61,19 @@ def word_clustering(features, control_list, X, target_vector=0):
   cluster_number = 0
   counter = 0
   cluster = []
-  with open("resultado_clustering_" + str(n) + "_clusters", "wb") as f:
+  with open("resultado_clustering_supervisado_" + str(n) + "_clusters", "wb") as f:
     for i in range(sum(count)):
       if counter >= count[val]:
         cluster_number += 1
         counter = 0
-        f.write('\n')
-        f.write('----------- Cluster: ' + str(cluster_number) + '----------------')
-        f.write('\n')
-        f.write(str(cluster))
+        line = '\n' + '----------- Cluster: ' + str(cluster_number) + ' ----------------' + '\n'
+        f.write(line.encode('utf-8'))
+        f.write(str(cluster).encode('utf-8'))
         cluster = []
 
       counter += 1
       cluster.append(clusters[i][0])
-
+  print('Done')
   return 0
 
 # Get the features dict
