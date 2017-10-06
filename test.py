@@ -1,4 +1,4 @@
-import re
+ import re
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.decomposition import TruncatedSVD
 from sklearn.cluster import KMeans
@@ -7,7 +7,7 @@ from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
 import _pickle as cPickle
 
-  
+
 def normalize_matrix(X):
   X_norm = normalize(X, axis=0, copy=True, return_norm=False)
   return X_norm

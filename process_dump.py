@@ -65,7 +65,7 @@ def generate_features_supervised(parsedData):
         if token[SYNSET] != '0' and token[SYNSET].isdigit():
           features = {}
           features['lemma'] = token[LEMMA]
-          features['pos'] = token[POS]
+          features['pos'] = token[POS][:2]
           # features['synset'] = token[SYNSET]
           # Save the previous and next token info
           try:
@@ -75,7 +75,7 @@ def generate_features_supervised(parsedData):
             features['word-1-pos'] = parsedData[i-1][POS]
           except IndexError:
             pass
-        
+
           # Save the synset as the target vector
           target_vector.append(token[SYNSET])
           final_features.append(features)
