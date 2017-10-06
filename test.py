@@ -1,4 +1,4 @@
- import re
+import re
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.decomposition import TruncatedSVD
 from sklearn.cluster import KMeans
@@ -9,7 +9,7 @@ import _pickle as cPickle
 
 
 def normalize_matrix(X):
-  X_norm = normalize(X, axis=0, copy=True, return_norm=False)
+  X_norm = normalize(X, axis=1, copy=True, return_norm=False)
   return X_norm
 
 
@@ -28,10 +28,10 @@ def kmeans(X, n):
   labels = kmeans.labels_
   return labels
 
-def word_clustering(features, control_list, X, target_vector=0):
+def word_clustering(features, control_list, X, n, target_vector=0):
 
   # Normalize the matrix
-  # X = normalize_matrix(X)
+  X = normalize_matrix(X)
   # Reduce dimensionality
   if target_vector:
     print(X.shape)
@@ -44,7 +44,6 @@ def word_clustering(features, control_list, X, target_vector=0):
 
   print(Y.shape)
   # Kmeans
-  n = 20
   print('Clustering...')
   labels = kmeans(Y, n)
   clusters = []
@@ -63,7 +62,7 @@ def word_clustering(features, control_list, X, target_vector=0):
   cluster = []
   with open("resultado_clustering_supervisado_" + str(n) + "_clusters", "wb") as f:
     for i in range(sum(count)):
-      if counter >= count[val]:
+      if counter >= count[cluster_number]:
         cluster_number += 1
         counter = 0
         line = '\n' + '----------- Cluster: ' + str(cluster_number) + ' ----------------' + '\n'
@@ -92,7 +91,9 @@ with open(r"target_vector.pickle", "rb") as input_file:
 with open(r"X.pickle", "rb") as input_file:
   X = cPickle.load(input_file)
 
-word_clustering(features, control_list, X, target_vector)
+print('Input number of clusters: ')
+n = int(input())
+word_clustering(features, control_list, X, n, target_vector)
 
 
 
