@@ -88,3 +88,17 @@ Tipos de selección de features:
 
 ### Clusterización
   Para la clusterizacion se utilizaron los mismos métodos que en el práctico pasado.
+  
+# Resultados
+## Para selección de features supervisada
+  Dadas las features utilizadas para el vectorizado, los clusters obtenidos con y sin feature selection aplicada no fueron muy interesantes. Aún así se distinguieron algunas mejoras luego de aplicar la tecnica de feature selection, donde, por ejemplo, se vieron agrupadas nacionalidades en un cluster o profesiones y cargos en otros.
+  Lo esperado es ver clusters semánticos, dado que la clase de pretexto eran los sentidos de cada palabra, pero debido a lo mencionado previamente sobre las features, se pueden dar clusters sintácticos más que semánticos, aunque la mejora al aplicar la selección de features si tiende a ser semántica.
+  
+  ## Para selección de features no supervisada
+    Se obtuvieron resultados muy parecidos al practico de clusterizado, donde los clusters tienden a ser mas sintácticos que semánticos ,dadas las features utilizadas.
+    
+  # Conclusión
+  Mediante distintas tecnicas de selección de features se redujo la dimensionalidad de las matrices, donde en el caso de _supervisado_ se inclinó por la selección de las mismas tales que provean una mejor categorización semántica. En el caso de _no supervisadas_ la reducción de dimensionalidad nos sirvió para descartar aquellas que no aportaran información util para el clusterizado.
+  
+  
+  
