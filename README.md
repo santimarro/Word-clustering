@@ -53,7 +53,7 @@ El proceso se divide en varias etapas:
   Luego de generar la matriz, se procedió a reducir las dimensiones de la misma utilizando LSA.
  
 
-### Clusterización
+## Clusterización
 
   El clusterizado se utilizó la versión del algoritmo _KMeans_ provisto por _Scikit Learn_, donde se utilizaron
   los siguientes parámetros:
